@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<script>
+  var dataTable = $('#show-data').DataTable({
+    'lengthMenu': [ [10, 25, 50, 100, -1], [10, 25, 50, 100, 'All'] ],
+    'ajax': {
+      type: 'GET',
+      url: 'madqtt/api/state',
+      dataSrc: function (data) {
+        errorCount = 0;
+        return data;
+      },
+      error: function (xhr, error, code) {
+        errorCount++;
+        console.log(xhr);
+        console.log(error);
+        console.log(code);
+        if (errorCount == 5) {
+            alert('Could not get updates five times in a row. More logs in browser developer console.');
+        }
+      }
+    },
+    'columns': [
+      {
+        data: 'origin',
+        title: 'Origin',
+        responsivePriority: 1
+      },
+      {
+        data: 'mode',
+        title: 'Mode',
+        responsivePriority: 2
+      },
+      {
+        data: 'injected',
+        title: 'Injected'
+      },
+      {
+        data: 'data-time',
+        title: 'Last Data'
+      },
+      {
+        data: 'proto-time',
+        title: 'Last Proto'
+      },
+      {
+        data: 'restart-time',
+        title: 'Last Restart'
+      },
+      {
+        data: 'state',
+        title: 'State',
+        responsivePriority: 3,
+        orderable: false,
+        className: 'text-nowrap',
+        render: function (data, type, row) {
+          if (data == "on") {
+            return '<center><button data-toggle="tooltip" title="Turn off device" type="button" class="turn-off btn btn-success btn-sm" data-origin="' + row.origin + '"><div class="loading" style="display:inline;"><i class="fa fa-power-off"></i></div></button></center>';
+          } else {
+            return '<center><button data-toggle="tooltip" title="Turn on device" type="button" class="turn-on btn btn-danger btn-sm" data-origin="' + row.origin + '"><div class="loading" style="display:inline;"><i class="fa fa-power-off"></i></div></button></center>';
+          }
+        },
+      }
+    ],
+    'columnDefs': [
+      {
+        'targets': [3, 4, 5],
+        'render': function (data, type, row) {
+          if (type == 'sort') {
+              return data;
+          }
+          var dateToShow = moment.utc(data * 1000);
+          if (dateToShow.isValid() && data != null && data != undefined && data > 0) {
+              return toHHMMSS(Math.abs(dateToShow.diff(moment.utc()) / 1000));
+          }
+          return 'None';
+        }
+      },
+    ],
+    'order': [[0, 'asc']],
+    'responsive': {
+      details: {
+        details: {
+          display: $.fn.dataTable.Responsive.display.childRowImmediate,
+          type: ''
+        }
+      }
+    },
+    'autoWidth': false,
+    'stateSave': true,
+    'stateDuration': 0
+  });
+
+  $(document).ready(function () {
+      setInterval(function () {
+          dataTable.ajax.reload(null, false);
+      }, 10000);
+  });
+
+  $('#show-data').on('click', 'button.turn-on', function (e) {
+    var origin = $(this).data('origin');
+    var loading = $(this).find('.loading');
+
+    loading.empty();
+    elem = $(document.createElement('img')).attr({
+        'src': 'static/loading.gif',
+        'class': 'convert_disp fa',
+        'width': '13px',
+        'heigth': '13px'
+    });
+    loading.append(elem);
+
+    sendDeviceCommand(origin, 'on')
+  });
+
+  $('#show-data').on('click', 'button.turn-off', function (e) {
+    var origin = $(this).data('origin');
+    var loading = $(this).find('.loading');
+
+    e.stopImmediatePropagation();
+    var r = confirm('Do you really want to turn off ' + origin + '?');
+    if (r != true) {
+      return;
+    }
+
+    loading.empty();
+    elem = $(document.createElement('img')).attr({
+        'src': 'static/loading.gif',
+        'class': 'convert_disp fa',
+        'width': '13px',
+        'heigth': '13px'
+    });
+    loading.append(elem);
+
+    sendDeviceCommand(origin, 'off')
+  });
+
+  var sendDeviceCommand = (origin, command) => {
+    $.ajax({
+        type: 'POST',
+        url: 'madqtt/api/devices/' + origin,
+        data: JSON.stringify({'command': command}),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (xhr.status == 204) {
+            setTimeout(function () {
+                dataTable.ajax.reload(null, false);
+            }, 1000);
+          }
+        },
+        error: function (msg) {
+          alert(msg);
+        }
+    });
+  }
+
+  var toHHMMSS = (secs) => {
+    var sec_num = parseInt(secs, 10)
+    var hours = Math.floor(sec_num / 3600)
+    var minutes = Math.floor(sec_num / 60) % 60
+    var seconds = sec_num % 60
+
+    return [hours, minutes, seconds]
+      .map(v => v < 10 ? '0' + v : v)
+      .filter((v, i) => v !== '00' || i > 0)
+      .join(':')
+  }
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>MADqtt</h2>
+<table id="show-data" class="table" style="width:100%"></table>
+{% endblock %}

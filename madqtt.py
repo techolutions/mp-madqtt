@@ -120,7 +120,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
 
     def savePluginConfig(self):
         self._logger.info('savePluginConfig')
-        self._pluginconfig.set('timeouts', 'check', 30)
+        self._pluginconfig.set('timeouts', 'check', '30')
 
         with open(self._rootdir + "/plugin.ini", "w") as configfile:
             self._pluginconfig.write(configfile)

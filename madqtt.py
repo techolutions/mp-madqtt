@@ -33,6 +33,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
 
         self._routes = [
             ("/madqtt", self.ui_overview, ['GET']),
+            ("/madqtt/settings", self.ui_overview, ['GET']),
             ("/madqtt/readme", self.ui_readme, ['GET']),
             ("/madqtt/api/state", self.api_state, ['GET']),
             ("/madqtt/api/devices/<device>", self.api_devices, ['POST']),
@@ -71,8 +72,36 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
             self._logger.warning('not active while in configmode')
             return False
 
+        self.startPlugin()
+
+        return True
+
+    def startPlugin(self):
         self._logger.info('plugin is running')
-        self._logger.debug('loading pluginconfig')
+        self.loadPluginConfig();
+
+        self._devices = []
+        for item in self._mad['db_wrapper'].download_status():
+            device = {}
+            device['origin'] = item['name']
+            device['state'] = None
+            device['restart-time'] = int(time.time())
+            self._devices.append(device)
+        self.refresh_devices()
+
+        self.mqttListener = Thread(name='MqttListener', target=self.mqttListener)
+        self.mqttListener.daemon = True
+        self.mqttListener.start()
+
+        self.madqttRunner = Thread(name='MadqttRunner', target=self.madqttRunner)
+        self.madqttRunner.daemon = True
+        self.madqttRunner.start()
+
+    def stopPlugin(self):
+        pass
+
+    def loadPluginConfig(self):
+        self._logger.debug('loadPluginConfig')
         self._config = {
             'topic': self._pluginconfig.get('mqtt', 'topic', fallback='madqtt'),
             'broker': {
@@ -89,24 +118,14 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
             }
         }
 
-        self._devices = []
-        for item in self._mad['db_wrapper'].download_status():
-            device = {}
-            device['origin'] = item['name']
-            device['state'] = None
-            device['restart-time'] = int(time.time())
-            self._devices.append(device)
-        self.refresh_devices()
+    def savePluginConfig(self):
+        self._logger.debug('savePluginConfig')
+        self._pluginconfig.set('timeouts', 'check', 30)
 
-        mqttListener = Thread(name='MqttListener', target=self.mqttListener)
-        mqttListener.daemon = True
-        mqttListener.start()
+        with open(self._rootdir + "/plugin.ini", "w") as configfile:
+            self._pluginconfig.write(configfile)
 
-        madqttRunner = Thread(name='MadqttRunner', target=self.madqttRunner)
-        madqttRunner.daemon = True
-        madqttRunner.start()
-
-        return True
+        self.loadPluginConfig()
 
     def madqttRunner(self):
         while True:

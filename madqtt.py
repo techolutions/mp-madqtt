@@ -33,7 +33,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
 
         self._routes = [
             ("/madqtt", self.ui_overview, ['GET']),
-            ("/madqtt/settings", self.ui_overview, ['GET']),
+            ("/madqtt/settings", self.ui_settings, ['GET']),
             ("/madqtt/readme", self.ui_readme, ['GET']),
             ("/madqtt/api/state", self.api_state, ['GET']),
             ("/madqtt/api/devices/<device>", self.api_devices, ['POST']),
@@ -101,7 +101,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
         pass
 
     def loadPluginConfig(self):
-        self._logger.debug('loadPluginConfig')
+        self._logger.info('loadPluginConfig')
         self._config = {
             'topic': self._pluginconfig.get('mqtt', 'topic', fallback='madqtt'),
             'broker': {
@@ -119,7 +119,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
         }
 
     def savePluginConfig(self):
-        self._logger.debug('savePluginConfig')
+        self._logger.info('savePluginConfig')
         self._pluginconfig.set('timeouts', 'check', 30)
 
         with open(self._rootdir + "/plugin.ini", "w") as configfile:
@@ -218,6 +218,11 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
     @auth_required
     def ui_overview(self):
         return render_template("overview.html", header="MADqtt Overview", title="MADqtt Overview")
+
+    @auth_required
+    def ui_settings(self):
+        self.savePluginConfig()
+        return 'test'
 
     @auth_required
     def ui_readme(self):

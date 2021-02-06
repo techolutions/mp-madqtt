@@ -117,6 +117,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
                 'check': int(self._pluginconfig.get('timeouts', 'check', fallback=60))
             }
         }
+        self._logger.info(self._config)
 
     def savePluginConfig(self):
         self._logger.info('savePluginConfig')

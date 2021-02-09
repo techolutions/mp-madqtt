@@ -1,13 +1,26 @@
 {% extends "madqtt.html" %}
 
 {% block header %}
+{{ super() }}
 {% endblock %}
 
 {% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/madmin_settings.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 {{ super() }}
 
-<h2>Settings</h2>
+<div class="row">
+  <div class="col-sm">
+    <div class="form-group">
+      <label for="myvalue">myvalue</label>
+      <input type="input" class="form-control" id="myvalue" name="myvalue" value="{{ element.origin }}" data-default="{{ element.origin }}">
+      <small class="form-text text-muted">text for myvalue</small>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}

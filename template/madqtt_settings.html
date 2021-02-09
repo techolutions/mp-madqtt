@@ -7,6 +7,14 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='js/madmin_settings.js') }}"></script>
+
+$('#broker.auth').change(function() {
+  if ($(this).is(':checked')) {
+    console.log("Checkbox is checked..")
+  } else {
+    console.log("Checkbox is not checked..")
+  }
+});
 {% endblock %}
 
 {% block content %}
@@ -35,11 +43,11 @@
       <div class="col">
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="broker.auth" name="broker.auth" value="">
-          <label for="broker.auth" class="form-check-label">using client authentication with username and password</label>
+          <label for="broker.auth" class="form-check-label">using client authentication</label>
         </div>
       </div>
     </div>
-    <fieldset class="form-group" disabled>
+    <fieldset class="form-group" id="broker.authsettings" disabled>
       <div class="form-row">
         <div class="col">
           <div class="form-group">

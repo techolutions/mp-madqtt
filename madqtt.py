@@ -218,11 +218,11 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
 
     @auth_required
     def ui_overview(self):
-        return render_template("madqtt_overview.html", header="MADqtt Overview", title="MADqtt Overview" subtab="overview")
+        return render_template("madqtt_overview.html", header="MADqtt Overview", title="MADqtt Overview", subtab="overview")
 
     @auth_required
     def ui_settings(self):
-        return render_template("madqtt_settings.html", header="MADqtt Settings", title="MADqtt Settings" subtab="settings")
+        return render_template("madqtt_settings.html", header="MADqtt Settings", title="MADqtt Settings", subtab="settings")
 
     @auth_required
     def ui_readme(self):

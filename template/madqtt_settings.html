@@ -9,7 +9,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/madmin_settings.js') }}"></script>
 
 <script type="text/javascript">
-  $('#broker.auth').change(function() {
+  $('#broker.auth').on('change',function(){
     if ($(this).is(':checked')) {
       console.log("Checkbox is checked..")
     } else {

@@ -8,13 +8,15 @@
 {{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='js/madmin_settings.js') }}"></script>
 
-$('#broker.auth').change(function() {
-  if ($(this).is(':checked')) {
-    console.log("Checkbox is checked..")
-  } else {
-    console.log("Checkbox is not checked..")
-  }
-});
+<script type="text/javascript">
+  $('#broker.auth').change(function() {
+    if ($(this).is(':checked')) {
+      console.log("Checkbox is checked..")
+    } else {
+      console.log("Checkbox is not checked..")
+    }
+  });
+</script>
 {% endblock %}
 
 {% block content %}

@@ -32,7 +32,7 @@
       <div class="col">
         <div class="form-group">
           <label for="broker.port">port</label>
-          <input type="input" class="form-control" id="broker.port" name="broker.port" value="1883" data-default="1883">
+          <input type="number" min="1" max="65535" class="form-control" id="broker.port" name="broker.port" value="1883" data-default="1883">
           <small class="form-text text-muted">port of the mqtt broker (Default: 1883)</small>
         </div>
       </div>
@@ -57,12 +57,47 @@
         <div class="col">
           <div class="form-group">
             <label for="broker.password">password</label>
-            <input type="input" class="form-control" id="broker.password" name="broker.password" value="">
+            <input type="password" class="form-control" id="broker.password" name="broker.password" value="">
             <small class="form-text text-muted">password for client authentication</small>
           </div>
         </div>
       </div>
     </fieldset>
+  </div>
+  <div class="col-sm">
+    <h4>timeouts</h4>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label for="timeouts.mitm">mitm</label>
+          <input type="number" min="1" class="form-control" id="timeouts.mitm" name="timeouts.mitm" value="localhost" data-default="localhost">
+          <small class="form-text text-muted">(Default: 600)</small>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="timeouts.proto">proto</label>
+          <input type="number" min="1" class="form-control" id="timeouts.proto" name="timeouts.proto" value="1883" data-default="1883">
+          <small class="form-text text-muted">(Default: 600)</small>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label for="timeouts.restart">restart</label>
+          <input type="number" min="1" class="form-control" id="timeouts.restart" name="timeouts.restart" value="localhost" data-default="localhost">
+          <small class="form-text text-muted">(Default: 900)</small>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="timeouts.check">check</label>
+          <input type="number" min="1" class="form-control" id="timeouts.check" name="timeouts.check" value="1883" data-default="1883">
+          <small class="form-text text-muted">(Default: 60)</small>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

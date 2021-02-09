@@ -34,8 +34,24 @@
     <div class="form-row">
       <div class="col">
         <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="broker.auth" name="broker.auth" value="">
-          <label for="broker.auth" class="form-check-label">Default checkbox</label>
+          <input type="checkbox" class="form-check-input" id="broker.auth" name="broker.auth" value="" checked>
+          <label for="broker.auth" class="form-check-label">using client authentication with username and password</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label for="broker.username">username</label>
+          <input type="input" class="form-control" id="broker.username" name="broker.username" value="">
+          <small class="form-text text-muted">username for client authentication</small>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="broker.password">password</label>
+          <input type="input" class="form-control" id="broker.password" name="broker.password" value="">
+          <small class="form-text text-muted">password for client authentication</small>
         </div>
       </div>
     </div>

@@ -20,14 +20,22 @@
         <div class="form-group">
           <label for="broker.host">host</label>
           <input type="input" class="form-control" id="broker.host" name="broker.host" value="localhost" data-default="localhost">
-          <small class="form-text text-muted">text for myvalue</small>
+          <small class="form-text text-muted">address of the mqtt broker (Default: localhost)</small>
         </div>
       </div>
       <div class="col">
         <div class="form-group">
           <label for="broker.port">port</label>
           <input type="input" class="form-control" id="broker.port" name="broker.port" value="1883" data-default="1883">
-          <small class="form-text text-muted">text for myvalue</small>
+          <small class="form-text text-muted">port of the mqtt broker (Default: 1883)</small>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="broker.auth" name="broker.auth" value="">
+          <label for="broker.auth" class="form-check-label">Default checkbox</label>
         </div>
       </div>
     </div>

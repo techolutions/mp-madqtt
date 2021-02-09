@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "madqtt.html" %}
 
 {% block header %}
 {% endblock %}
@@ -7,9 +7,5 @@
 {% endblock %}
 
 {% block content %}
-<h2>MADqtt - Settings</h2>
-<nav class="nav nav-pills nav-fill mt-3 mb-3 flex-column flex-sm-row">
-    <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "area" }}" href="{{ url_for('settings_areas') }}">Areas</a>
-    <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "auth" }}" href="{{ url_for('settings_auth') }}">Auth</a>
-</nav>
+<h2>Settings</h2>
 {% endblock %}

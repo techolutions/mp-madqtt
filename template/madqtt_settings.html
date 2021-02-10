@@ -10,7 +10,11 @@
 
 <script type="text/javascript">
   $('#broker\\.auth').change(function() {
-    $('#broker\\.authsettings').prop('disabled',!$(this).is(":checked"));
+    if ($(this).children("option:selected").val() == 'true') {
+      $('#broker\\.authsettings').prop('disabled', false);
+    } else {
+      $('#broker\\.authsettings').prop('disabled', true);
+    }
   });
 </script>
 {% endblock %}
@@ -33,18 +37,6 @@
     <div class="form-row">
       <div class="col">
         <div class="form-group">
-          <label for="broker.tls">tls</label>
-          <select class="form-control" id="broker.tls" name="broker.tls">
-            <option selected>true</option>
-            <option>false</option>
-          </select>
-          <small class="form-text text-muted">using tls to connect to the mqtt broker (Default: false)</small>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col">
-        <div class="form-group">
           <label for="broker.host">host</label>
           <input type="input" class="form-control" id="broker.host" name="broker.host" value="localhost" data-default="localhost">
           <small class="form-text text-muted">address of the mqtt broker (Default: localhost)</small>
@@ -60,9 +52,25 @@
     </div>
     <div class="form-row">
       <div class="col">
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="broker.auth" name="broker.auth" value="">
-          <label for="broker.auth" class="form-check-label">using client authentication</label>
+        <div class="form-group">
+          <label for="broker.tls">tls</label>
+          <select class="form-control" id="broker.tls" name="broker.tls">
+            <option>true</option>
+            <option selected>false</option>
+          </select>
+          <small class="form-text text-muted">using tls to connect to the mqtt broker (Default: false)</small>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-group">
+          <label for="broker.auth">tls</label>
+          <select class="form-control" id="broker.auth" name="broker.auth">
+            <option>true</option>
+            <option selected>false</option>
+          </select>
+          <small class="form-text text-muted">using client authentication (Default: false)</small>
         </div>
       </div>
     </div>

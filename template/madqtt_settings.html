@@ -16,6 +16,11 @@
       $('#broker\\.authsettings').prop('disabled', true);
     }
   });
+
+  $("#submit").click(function() {
+        save_data = get_save_data();
+        console.log(save_data);
+    });
 </script>
 {% endblock %}
 
@@ -65,7 +70,7 @@
     <div class="form-row">
       <div class="col">
         <div class="form-group">
-          <label for="broker.auth">authentification</label>
+          <label for="broker.auth">auth</label>
           <select class="form-control" id="broker.auth" name="broker.auth">
             <option>true</option>
             <option selected>false</option>
@@ -78,14 +83,14 @@
       <div class="form-row">
         <div class="col">
           <div class="form-group">
-            <label for="broker.username">username</label>
+            <label for="broker.username">user</label>
             <input type="input" class="form-control" id="broker.username" name="broker.username" value="">
             <small class="form-text text-muted">username for client authentication</small>
           </div>
         </div>
         <div class="col">
           <div class="form-group">
-            <label for="broker.password">password</label>
+            <label for="broker.password">pass</label>
             <input type="password" class="form-control" id="broker.password" name="broker.password" value="">
             <small class="form-text text-muted">password for client authentication</small>
           </div>

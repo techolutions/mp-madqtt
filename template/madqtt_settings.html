@@ -32,6 +32,14 @@
     </div>
     <div class="form-row">
       <div class="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="broker.tls" name="broker.tls" value="">
+          <label for="broker.tls" class="form-check-label">using tls to connect to the mqtt broker</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
         <div class="form-group">
           <label for="broker.host">host</label>
           <input type="input" class="form-control" id="broker.host" name="broker.host" value="localhost" data-default="localhost">
@@ -43,14 +51,6 @@
           <label for="broker.port">port</label>
           <input type="number" min="1" max="65535" class="form-control" id="broker.port" name="broker.port" value="1883" data-default="1883">
           <small class="form-text text-muted">port of the mqtt broker (Default: 1883)</small>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col">
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="broker.tls" name="broker.tls" value="">
-          <label for="broker.tls" class="form-check-label">using ssl/tls</label>
         </div>
       </div>
     </div>

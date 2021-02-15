@@ -111,14 +111,20 @@
       <div class="col">
         <div class="form-group">
           <label for="timeouts.mitm">mitm</label>
-          <input type="number" min="1" class="form-control" id="timeouts.mitm" name="timeouts.mitm" value="600" data-default="600">
+          <div class="input-group">
+            <input type="number" min="1" class="form-control" id="timeouts.mitm" name="timeouts.mitm" value="600" data-default="600">
+            <span class="input-group-text">seconds</span>
+          </div>
           <small class="form-text text-muted">(Default: 600)</small>
         </div>
       </div>
       <div class="col">
         <div class="form-group">
           <label for="timeouts.proto">proto</label>
-          <input type="number" min="1" class="form-control" id="timeouts.proto" name="timeouts.proto" value="600" data-default="600">
+          <div class="input-group">
+            <input type="number" min="1" class="form-control" id="timeouts.proto" name="timeouts.proto" value="600" data-default="600">
+            <span class="input-group-text">s</span>
+          </div>
           <small class="form-text text-muted">(Default: 600)</small>
         </div>
       </div>

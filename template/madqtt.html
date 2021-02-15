@@ -9,13 +9,9 @@
 {% block content %}
 <nav class="nav nav-pills nav-fill mt-3 mb-3 flex-column flex-sm-row">
     <a class="navbar-brand" href="#">MADqtt</a>
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "overview" }}" href="{{ url_for('madqtt.madqtt') }}">Overview</a>
-      </li>
-      <li class="nav-item">
-        <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "settings" }}" href="{{ url_for('madqtt.madqttsettings') }}">Settings</a>
-      </li>
-    </ul>
+    <div class="navbar-nav">
+      <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "overview" }}" href="{{ url_for('madqtt.madqtt') }}">Overview</a>
+      <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "settings" }}" href="{{ url_for('madqtt.madqttsettings') }}">Settings</a>
+    </div>
 </nav>
 {% endblock %}

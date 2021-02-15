@@ -8,7 +8,7 @@
 
 {% block content %}
 <nav class="nav nav-pills nav-fill mt-3 mb-3">
-    <button class="navbar-brand btn btn-primary btn-lg" disabled>MADqtt</button>
+    <button class="navbar-brand btn btn-outline-primary" disabled>MADqtt</button>
     <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "overview" }}" href="{{ url_for('madqtt.madqtt') }}">Overview</a>
     <a class="flex-sm-fill text-sm-center nav-link {{ "active" if subtab == "settings" }}" href="{{ url_for('madqtt.madqttsettings') }}">Settings</a>
 </nav>

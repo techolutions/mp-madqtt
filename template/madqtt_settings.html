@@ -22,8 +22,9 @@
     console.log(save_data);
   });
 
-  $("#test").click(function() {
-    console.log($("#broker\\.host").val());
+  $("#connection").click(function() {
+    $("#broker\\.host").val();
+    console.log();
   });
 </script>
 {% endblock %}
@@ -66,7 +67,7 @@
       <div class="col-xs">
         <div class="form-group">
           <label>&nbsp;</label>
-          <button type="button" class="form-control btn btn-secondary" id="test">
+          <button type="button" class="form-control btn btn-secondary" id="connection">
             <i class="fa fa-sync-alt"></i>
           </button>
         </div>

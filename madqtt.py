@@ -36,6 +36,7 @@ class Madqtt(mapadroid.utils.pluginBase.Plugin):
             ("/madqtt/settings", self.ui_settings, ['GET']),
             ("/madqtt/readme", self.ui_readme, ['GET']),
             ("/madqtt/api/state", self.api_state, ['GET']),
+            ("/madqtt/api/connection", self.api_connection, ['POST']),
             ("/madqtt/api/devices/<device>", self.api_devices, ['POST']),
         ]
 

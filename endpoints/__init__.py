@@ -1,8 +1,9 @@
 from aiohttp import web
 
-from plugins.mp-madqtt.endpoints.ExampleEndpoint import ExampleEndpoint
-from plugins.mp-madqtt.endpoints.PluginfaqEndpoint import PluginfaqEndpoint
-from plugins.mp-madqtt.endpoints.ReadmeEndpoint import ReadmeEndpoint
+import importlib
+importlib.import_module("plugins.mp-madqtt.endpoints.ExampleEndpoint").ExampleEndpoint
+importlib.import_module("plugins.mp-madqtt.endpoints.PluginfaqEndpoint").PluginfaqEndpoint
+importlib.import_module("plugins.mp-madqtt.endpoints.ReadmeEndpoint").ReadmeEndpoint
 
 
 def register_custom_plugin_endpoints(app: web.Application):

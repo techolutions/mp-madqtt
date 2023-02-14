@@ -4,7 +4,7 @@ from aiohttp import web
 
 import mapadroid.plugins.pluginBase
 import importlib
-register_custom_plugin_endpoints = importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
+importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
 
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 

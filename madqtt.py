@@ -3,8 +3,8 @@ from typing import Dict
 from aiohttp import web
 
 import mapadroid.plugins.pluginBase
-from plugins.mp-madqtt.endpoints import register_custom_plugin_endpoints
-
+import importlib
+importlib.import_module("plugins.mp-eventwatcher.endpoints").register_custom_plugin_endpoints
 
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 

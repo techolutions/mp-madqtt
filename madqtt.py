@@ -3,7 +3,7 @@ from typing import Dict
 from aiohttp import web
 
 import mapadroid.plugins.pluginBase
-from plugins.madPluginExample.endoints import register_custom_plugin_endpoints
+from plugins.MADqtt.endoints import register_custom_plugin_endpoints
 
 
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):

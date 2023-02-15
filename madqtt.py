@@ -1,4 +1,5 @@
 import os
+import asyncio
 from typing import Dict
 from aiohttp import web
 
@@ -69,7 +70,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     async def MADqtt(self):
         while True:
             self._mad_parts['logger'].info('doing MADqtt things')
-            
+
             await asyncio.sleep(self._config['timeouts']['check'])
 
 

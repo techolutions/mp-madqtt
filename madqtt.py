@@ -11,8 +11,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     def _file_path(self) -> str:
         return os.path.dirname(os.path.abspath(__file__))
 
-    def __init__(self, subapp_to_register_to: web.Application, mad: Dict):
-        super().__init__(subapp_to_register_to, mad)
+    def __init__(self, subapp_to_register_to: web.Application, mad_parts: Dict):
+        super().__init__(subapp_to_register_to, mad_parts)
 
         self.author = self._versionconfig.get("plugin", "author", fallback="ExXtReMe")
         self.url = self._versionconfig.get("plugin", "url", fallback="https://github.com/techolutions/mp-madqtt")
@@ -36,9 +36,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
     async def _perform_operation(self):
 
-        if self._mad['args'].config_mode:
+        if self._mad_parts['args'].config_mode:
             return False
 
-        self._mad['logger'].info('plugin is running')
+        self._mad_parts['logger'].info('plugin is running')
 
         return True

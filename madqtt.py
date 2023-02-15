@@ -71,6 +71,16 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('doing MADqtt things')
 
+            self._devices = []
+            for item in self._mad_parts['db_wrapper'].download_status():
+                device = {}
+                device['origin'] = item['name']
+                device['state'] = None
+                device['restart-time'] = int(time.time())
+                self._devices.append(device)
+
+            self._mad_parts['logger'].info(self._devices)
+
             await asyncio.sleep(self._config['timeouts']['check'])
 
 

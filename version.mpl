@@ -1,5 +1,5 @@
 [plugin]
-pluginname = madqtt
+pluginname = MADqtt
 description = Plugin to restart not responding devices via MQTT
 author = ExXtReMe
 url = https://github.com/techolutions/mp-madqtt

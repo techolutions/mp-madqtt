@@ -41,4 +41,38 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
         self._mad_parts['logger'].info('plugin is running')
 
+        self.loadPluginConfig()
+        self.eventLoop()
+
         return True
+
+    def loadPluginConfig(self):
+        self._mad_parts['logger'].info('loadPluginConfig')
+        self._config = {
+            'topic': self._pluginconfig.get('mqtt', 'topic', fallback='madqtt'),
+            'broker': {
+                'host': self._pluginconfig.get('broker', 'host', fallback='localhost'),
+                'port': int(self._pluginconfig.get('broker', 'port', fallback=1883)),
+                'user': self._pluginconfig.get('broker', 'user', fallback=None),
+                'pass': self._pluginconfig.get('broker', 'pass', fallback=None)
+            },
+            'timeouts': {
+                'mitm': int(self._pluginconfig.get('timeouts', 'mitm', fallback=600)),
+                'proto': int(self._pluginconfig.get('timeouts', 'proto', fallback=600)),
+                'restart': int(self._pluginconfig.get('timeouts', 'restart', fallback=900)),
+                'check': int(self._pluginconfig.get('timeouts', 'check', fallback=60))
+            }
+        }
+        self._mad_parts['logger'].info(self._config)
+
+
+    async def MADqtt(self):
+        while True:
+            self._mad_parts['logger'].info('doing MADqtt things')
+            
+            await asyncio.sleep(self._config['timeouts']['check'])
+
+
+    def eventLoop(self):
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.MADqtt())

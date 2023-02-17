@@ -4,6 +4,8 @@ from typing import Dict
 from aiohttp import web
 
 import mapadroid.plugins.pluginBase
+from mapadroid.db.helper.TrsStatusHelper import TrsStatusHelper
+
 import importlib
 register_custom_plugin_endpoints = importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
 
@@ -72,12 +74,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             self._mad_parts['logger'].info('doing MADqtt things')
 
             self._devices = []
-            for item in self._mad_parts['db_wrapper'].download_status():
-                device = {}
-                device['origin'] = item['name']
-                device['state'] = None
-                device['restart-time'] = int(time.time())
-                self._devices.append(device)
+            async with self._mad["db_wrapper"] as session, session:
+                self._devices = await TrsStatusHelper.get_all_of_instance(session)
+            # for item in self._mad_parts['db_wrapper'].download_status():
+            #     device = {}
+            #     device['origin'] = item['name']
+            #     device['state'] = None
+            #     device['restart-time'] = int(time.time())
+            #     self._devices.append(device)
 
             self._mad_parts['logger'].info(self._devices)
 

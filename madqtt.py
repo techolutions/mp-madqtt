@@ -44,9 +44,12 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         if self._mad_parts['args'].config_mode:
             return False
 
-        self._mad_parts['logger'].info('plugin is running')
+        self._instance = self._mad_parts["db_wrapper"].get_instance_id()
+        self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
         self.loadPluginConfig()
+        self.searchDevices()
+        
         self.eventLoop()
 
         return True
@@ -70,25 +73,22 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         }
         self._mad_parts['logger'].info(self._config)
 
+    def searchDevices(self):
+        self._devices = []
+        async with self._mad_parts["db_wrapper"] as session, session:
+            for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):
+                device = {}
+                device['id'] = settingsDevice.device_id
+                device['name'] = settingsDevice.name
+                device['state'] = None
+                device['power-toggle'] = int(time.time())
+                self._devices.append(device)
+
+        self._mad_parts['logger'].info(self._devices)
 
     async def MADqtt(self):
         while True:
             self._mad_parts['logger'].info('doing MADqtt things')
-
-            self._devices = []
-            instance = self._mad_parts["db_wrapper"].get_instance_id()
-
-            async with self._mad_parts["db_wrapper"] as session, session:
-                for item in await SettingsDeviceHelper.get_all(session, instance):
-                    device = {}
-                    device['id'] = item.device_id
-                    device['name'] = item.name
-                    device['state'] = None
-                    device['restart-time'] = int(time.time())
-                    self._devices.append(device)
-
-            self._mad_parts['logger'].info(self._devices)
-
             await asyncio.sleep(self._config['timeouts']['check'])
 
 

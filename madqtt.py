@@ -48,8 +48,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
         self.loadPluginConfig()
-        self.searchDevices()
-        
+        await self.searchDevices()
+
         self.eventLoop()
 
         return True
@@ -73,7 +73,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         }
         self._mad_parts['logger'].info(self._config)
 
-    def searchDevices(self):
+    async def searchDevices(self):
         self._devices = []
         async with self._mad_parts["db_wrapper"] as session, session:
             for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):

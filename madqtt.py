@@ -90,6 +90,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._mad_parts['logger'].info('refresh_devices')
 
         self._mad_parts['logger'].info(await self._mad_parts['mitm_mapper'].get_injection_status('ATV06'))
+        self._mad_parts['logger'].info(await self._mad_parts['mitm_mapper'].request_latest('ATV06'))
+
         #mitm_stats = json.loads(self._mad_parts['mitm_receiver_process'].status(None, None))['origin_status']
 
 

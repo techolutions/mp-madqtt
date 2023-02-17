@@ -80,7 +80,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):
                 device = {}
                 device['id'] = settingsDevice.device_id
-                device['name'] = settingsDevice.name
+                device['origin'] = settingsDevice.name
                 device['power-toggle'] = 0
                 self._devices.append(device)
 

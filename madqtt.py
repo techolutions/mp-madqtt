@@ -75,13 +75,12 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
             self._devices = []
             async with self._mad_parts["db_wrapper"] as session, session:
-                self._devices = await TrsStatusHelper.get_all_of_instance(session, self._mad_parts["db_wrapper"].get_instance_id())
-            # for item in self._mad_parts['db_wrapper'].download_status():
-            #     device = {}
-            #     device['origin'] = item['name']
-            #     device['state'] = None
-            #     device['restart-time'] = int(time.time())
-            #     self._devices.append(device)
+                for item in await TrsStatusHelper.get_all_of_instance(session, self._mad_parts["db_wrapper"].get_instance_id()):
+                    device = {}
+                    device['origin'] = item['name']
+                    device['state'] = None
+                    device['restart-time'] = int(time.time())
+                    self._devices.append(device)
 
             self._mad_parts['logger'].info(self._devices)
 

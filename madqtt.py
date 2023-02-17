@@ -40,22 +40,21 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                                                        description, self.version)
 
     async def _perform_operation(self):
-
         if self._mad_parts['args'].config_mode:
             return False
 
         self._instance = self._mad_parts["db_wrapper"].get_instance_id()
         self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
-        self.loadPluginConfig()
-        await self.searchDevices()
+        self.load_plugin_config()
+        await self.search_devices()
 
-        self.eventLoop()
+        self.event_loop()
 
         return True
 
-    def loadPluginConfig(self):
-        self._mad_parts['logger'].info('loadPluginConfig')
+    def load_plugin_config(self):
+        self._mad_parts['logger'].info('load_plugin_config')
         self._config = {
             'topic': self._pluginconfig.get('mqtt', 'topic', fallback='madqtt'),
             'broker': {
@@ -73,25 +72,33 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         }
         self._mad_parts['logger'].info(self._config)
 
-    async def searchDevices(self):
+    async def search_devices(self):
+        self._mad_parts['logger'].info('search_devices')
+
         self._devices = []
         async with self._mad_parts["db_wrapper"] as session, session:
             for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):
                 device = {}
                 device['id'] = settingsDevice.device_id
                 device['name'] = settingsDevice.name
-                device['state'] = None
-                device['power-toggle'] = int(time.time())
+                device['power-toggle'] = 0
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)
 
-    async def MADqtt(self):
+    async def refresh_devices(self):
+        self._logger.debug('refresh_devices')
+
+        self._logger.debug(self._mad_parts['mitm_mapper'].get_injection_status('ATV06'))
+        #mitm_stats = json.loads(self._mad_parts['mitm_receiver_process'].status(None, None))['origin_status']
+
+
+    async def madqtt(self):
         while True:
             self._mad_parts['logger'].info('doing MADqtt things')
             await asyncio.sleep(self._config['timeouts']['check'])
 
 
-    def eventLoop(self):
+    def event_loop(self):
         loop = asyncio.get_event_loop()
-        loop.create_task(self.MADqtt())
+        loop.create_task(self.madqtt())

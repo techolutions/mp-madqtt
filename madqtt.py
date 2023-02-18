@@ -90,10 +90,16 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     async def refresh_devices(self):
         self._mad_parts['logger'].info('refresh_devices')
 
-        self._mad_parts['logger'].info(await self._mad_parts['mitm_mapper'].get_injection_status('ATV06'))
-
-        mitm_stats = json.loads(self._mad_parts['mitm_receiver_process'].status(None, None))
-        self._mad_parts['logger'].info(mitm_stats)
+        for device in self._devices:
+            device['injected'] = await self._mad_parts['mitm_mapper'].get_injection_status(device['origin'])
+            async with self._mad_parts["db_wrapper"] as session, session:
+                for trsStatus in await TrsStatusHelper.get(session, device['id']):
+                    device['idle'] = trsStatus.idle
+                    device['proto-time'] = trsStatus.lastProtoDateTime
+                    device['sleep-time'] = trsStatus.currentSleepTime
+                    device['softban-time'] = trsStatus.last_softban_action
+                    
+        self._mad_parts['logger'].info(self._devices)
 
     async def madqtt(self):
         while True:

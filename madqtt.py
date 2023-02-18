@@ -92,12 +92,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
         for device in self._devices:
             device['injected'] = await self._mad_parts['mitm_mapper'].get_injection_status(device['origin'])
-            # async with self._mad_parts["db_wrapper"] as session, session:
-            #     for trsStatus in await TrsStatusHelper.get(session, device['id']):
-            #         device['idle'] = trsStatus.idle
-            #         device['proto-time'] = trsStatus.lastProtoDateTime
-            #         device['sleep-time'] = trsStatus.currentSleepTime
-            #         device['softban-time'] = trsStatus.last_softban_action
+
+            async with self._mad_parts["db_wrapper"] as session, session:
+                trsStatus: Optional[TrsStatus] = await TrsStatusHelper.get(session, device['id'])
+                if trsStatus:
+                    device['idle'] = trsStatus.idle
+                    device['proto-time'] = trsStatus.lastProtoDateTime
+                    device['sleep-time'] = trsStatus.currentSleepTime
+                    device['softban-time'] = trsStatus.last_softban_action
 
         self._mad_parts['logger'].info(self._devices)
 

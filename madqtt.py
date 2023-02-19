@@ -4,6 +4,7 @@ import time
 import json
 from typing import Dict
 from aiohttp import web
+import asyncio_mqtt as aiomqtt
 
 import mapadroid.plugins.pluginBase
 from mapadroid.db.helper.SettingsDeviceHelper import SettingsDeviceHelper
@@ -82,7 +83,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 device = {}
                 device['id'] = settingsDevice.device_id
                 device['origin'] = settingsDevice.name
-                device['power-toggle'] = 0
+                device['power-toggle-time'] = None
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)

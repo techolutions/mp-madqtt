@@ -84,7 +84,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 device['id'] = settingsDevice.device_id
                 device['origin'] = settingsDevice.name
                 device['state'] = None
-                device['power-time'] = datetime.datetime.utcnow()
+                device['power-time'] = datetime.datetime.now(datetime.timezone.utc)
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)
@@ -104,9 +104,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                     device['softban-time'] = trsStatus.last_softban_action
                 else:
                     device['idle'] = 0
-                    device['proto-time'] = datetime.datetime.utcnow()
+                    device['proto-time'] = datetime.datetime.now(datetime.timezone.utc)
                     device['sleep-time'] = 0
-                    device['softban-time'] = datetime.datetime.utcnow()
+                    device['softban-time'] = datetime.datetime.now(datetime.timezone.utc)
 
         self._mad_parts['logger'].info(self._devices)
 

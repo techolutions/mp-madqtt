@@ -79,7 +79,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._mad_parts['logger'].info(self._config)
 
     async def save_plugin_config(self):
-        self._logger.info('save_plugin_config')
+        self._mad_parts['logger'].info('save_plugin_config')
         self._pluginconfig.set('timeouts', 'check', '30')
 
         async with aiofiles.open(self._rootdir + "/plugin.ini", "w") as configfile:

@@ -2,7 +2,6 @@ import os
 import asyncio
 import datetime
 import json
-import aiofiles
 from typing import Dict
 from aiohttp import web
 import asyncio_mqtt as aiomqtt
@@ -82,8 +81,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._mad_parts['logger'].info('save_plugin_config')
         self._pluginconfig.set('timeouts', 'check', '30')
 
-        async with aiofiles.open(self._rootdir + "/plugin.ini", "w") as configfile:
-            await self._pluginconfig.write(configfile)
+        with open(self._rootdir + "/plugin.ini", "w") as configfile:
+            self._pluginconfig.write(configfile)
 
         self.load_plugin_config()
 

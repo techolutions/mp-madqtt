@@ -103,10 +103,10 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                     device['sleep-time'] = trsStatus.currentSleepTime
                     device['softban-time'] = trsStatus.last_softban_action
                 else:
-                    device['idle'] = 0
-                    device['proto-time'] = datetime.datetime.now(datetime.timezone.utc)
-                    device['sleep-time'] = 0
-                    device['softban-time'] = datetime.datetime.now(datetime.timezone.utc)
+                    device['idle'] = None
+                    device['proto-time'] = None
+                    device['sleep-time'] = None
+                    device['softban-time'] = None
 
         self._mad_parts['logger'].info(self._devices)
 

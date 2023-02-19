@@ -2,6 +2,7 @@ import os
 import asyncio
 import datetime
 import json
+import aiofiles
 from typing import Dict
 from aiohttp import web
 import asyncio_mqtt as aiomqtt
@@ -20,6 +21,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
     def __init__(self, subapp_to_register_to: web.Application, mad_parts: Dict):
         super().__init__(subapp_to_register_to, mad_parts)
+
+        self._rootdir = os.path.dirname(os.path.abspath(__file__))
 
         self.author = self._versionconfig.get("plugin", "author", fallback="ExXtReMe")
         self.url = self._versionconfig.get("plugin", "url", fallback="https://github.com/techolutions/mp-madqtt")
@@ -48,14 +51,15 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._instance = self._mad_parts["db_wrapper"].get_instance_id()
         self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
-        self.load_plugin_config()
+        await self.load_plugin_config()
+        await self.load_plugin_config()
         await self.search_devices()
 
         self.event_loop()
 
         return True
 
-    def load_plugin_config(self):
+    async def load_plugin_config(self):
         self._mad_parts['logger'].info('load_plugin_config')
         self._config = {
             'topic': self._pluginconfig.get('mqtt', 'topic', fallback='madqtt'),
@@ -74,6 +78,15 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         }
         self._mad_parts['logger'].info(self._config)
 
+    async def save_plugin_config(self):
+        self._logger.info('save_plugin_config')
+        self._pluginconfig.set('timeouts', 'check', '30')
+
+        async with aiofiles.open(self._rootdir + "/plugin.ini", "w") as configfile:
+            await self._pluginconfig.write(configfile)
+
+        self.load_plugin_config()
+
     async def search_devices(self):
         self._mad_parts['logger'].info('search_devices')
 
@@ -84,7 +97,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 device['id'] = settingsDevice.device_id
                 device['origin'] = settingsDevice.name
                 device['state'] = None
-                device['power-time'] = datetime.datetime.now(datetime.timezone.utc)
+                device['power-time'] = None
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)

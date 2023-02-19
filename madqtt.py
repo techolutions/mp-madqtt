@@ -52,7 +52,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
         await self.load_plugin_config()
-        await self.load_plugin_config()
+        await self.save_plugin_config()
         await self.search_devices()
 
         self.event_loop()

@@ -1,6 +1,6 @@
 import os
 import asyncio
-import time
+import datetime
 import json
 from typing import Dict
 from aiohttp import web
@@ -84,7 +84,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 device['id'] = settingsDevice.device_id
                 device['origin'] = settingsDevice.name
                 device['state'] = None
-                device['power-time'] = time.time()
+                device['power-time'] = datetime.now()
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)
@@ -102,6 +102,11 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                     device['proto-time'] = trsStatus.lastProtoDateTime
                     device['sleep-time'] = trsStatus.currentSleepTime
                     device['softban-time'] = trsStatus.last_softban_action
+                else:
+                    device['idle'] = 0
+                    device['proto-time'] = trsStatus.lastProtoDateTime
+                    device['sleep-time'] = 0
+                    device['softban-time'] = trsStatus.last_softban_action
 
         self._mad_parts['logger'].info(self._devices)
 
@@ -114,7 +119,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 if device['state'] == 'off':
                     # turned off devices should be skipped
                     self._mad_parts['logger'].info('device {0} has been skipped, because it\'s off'.format(device['origin']))
-                elif device['idle'] == '1':
+                elif device['idle'] == 1:
                     # paused devices should be skipped
                     self._mad_parts['logger'].info('device {0} has been skipped, because it\'s paused'.format(device['origin']))
                 # elif self.elapsed_seconds(device['restart-time']) < self._config['timeouts']['restart']:

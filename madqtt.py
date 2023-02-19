@@ -83,7 +83,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 device = {}
                 device['id'] = settingsDevice.device_id
                 device['origin'] = settingsDevice.name
-                device['power-toggle-time'] = None
+                device['state'] = None
+                device['power-time'] = time.time()
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)
@@ -106,9 +107,24 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
     async def madqtt(self):
         while True:
-            self._mad_parts['logger'].info('doing MADqtt things')
+            self._mad_parts['logger'].info('searching for devices that need a reboot')
 
             await self.refresh_devices()
+            for device in self._devices:
+                if device['state'] == 'off':
+                    # turned off devices should be skipped
+                    self._mad_parts['logger'].info('device {0} has been skipped, because it\'s off'.format(device['origin']))
+                elif device['idle'] == '1':
+                    # paused devices should be skipped
+                    self._mad_parts['logger'].info('device {0} has been skipped, because it\'s paused'.format(device['origin']))
+                # elif self.elapsed_seconds(device['restart-time']) < self._config['timeouts']['restart']:
+                #     # recently restarted devices sholud be skipped
+                #     self._mad_parts['logger'].info('device {0} has been skipped, because it\'s recently (re)started'.format(device['origin']))
+                # elif (device['injected'] == False and self.elapsed_seconds(device['data-time']) > self._config['timeouts']['mitm']) or (self.elapsed_seconds(device['proto-time'] + device['sleep-time']) > self._config['timeouts']['proto']):
+                #     self._logger.info('device {0} will be restarted'.format(device['origin']))
+                #     self.device_command(device['origin'], 'restart')
+                #     time.sleep(1)
+
             await asyncio.sleep(self._config['timeouts']['check'])
 
 

@@ -1,17 +1,23 @@
 [plugin]
 active = true
 
-[mqtt]
-topic = madqtt
+[timeouts]
+proto = 600
+restart = 900
+check = 60
 
-[broker]
+[mqtt]
 host = localhost
 #port = 1883
 #user = mqttuser
 #pass = mqttpass
+ssl = false
+client-id = madqtt-client
 
-[timeouts]
-mitm = 600
-proto = 600
-restart = 900
-check = 60
+[device.ATV06]
+active = true
+mode = mqtt
+topic-pub = cmnd/tasmota_471E51/POWER
+topic-sub = stat/tasmota_471E51/POWER
+payload-on = ON
+payload-off = OFF

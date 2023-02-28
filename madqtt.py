@@ -15,6 +15,7 @@ import importlib
 register_custom_plugin_endpoints = importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
 
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):
+    global client
 
     def _file_path(self) -> str:
         return os.path.dirname(os.path.abspath(__file__))
@@ -169,7 +170,6 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
-        global client
         reconnect_interval = 10
         while True:
             try:

@@ -146,9 +146,10 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
-            await asyncio.sleep(1)
-            await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
+            async with self._client as client:
+                await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
+                await asyncio.sleep(1)
+                await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
 
             # await self.refresh_devices()
             # for device in self._devices:

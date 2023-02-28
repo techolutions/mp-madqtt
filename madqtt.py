@@ -146,7 +146,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            asyncio.create_task(self.mqtt_listener())
+            async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as c:
+                self._client = c
+                yield
 
             await self._client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-off'])
             await asyncio.sleep(1)

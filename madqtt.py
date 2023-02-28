@@ -80,7 +80,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
         #load device config if present
         for device in self._devices:
-            section = 'device.{0}'.format(device['origin']
+            section = 'device.{0}'.format(device['origin'])
+            self._mad_parts['logger'].info('read device config from section {0}'.format(section))
 
             self._config['devices'][device['origin']] = {
                 'active': self._pluginconfig.getboolean(section, "active", fallback=False),

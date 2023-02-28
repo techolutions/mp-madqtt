@@ -158,7 +158,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
             if (self._mqtt_client != None):
-                self.restart_device('ATV06')
+                await self.restart_device('ATV06')
 
             # await self.refresh_devices()
             # for device in self._devices:

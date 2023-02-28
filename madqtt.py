@@ -13,6 +13,8 @@ from mapadroid.db.helper.TrsStatusHelper import TrsStatusHelper
 import importlib
 register_custom_plugin_endpoints = importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
 
+client = None
+
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
     def _file_path(self) -> str:
@@ -143,13 +145,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     #     self._mad_parts['logger'].info(self._devices)
 
     async def madqtt_runner(self):
+        global client
+
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            async with self._client as client:
-                await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
-                await asyncio.sleep(1)
-                await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
+            await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
+            await asyncio.sleep(1)
+            await client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
 
             # await self.refresh_devices()
             # for device in self._devices:
@@ -171,12 +174,13 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
+        global client
         reconnect_interval = 10
-        self._client = aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass'])
 
         while True:
             try:
-                async with self._client as client:
+                async with aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass']) as c:
+                    client = c
                     async with client.messages() as messages:
                         await client.subscribe('#')
                         async for message in messages:

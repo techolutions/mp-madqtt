@@ -5,6 +5,7 @@ import json
 from typing import Dict
 from aiohttp import web
 import asyncio_mqtt as aiomqtt
+import paho.mqtt as mqtt
 
 import mapadroid.plugins.pluginBase
 from mapadroid.db.helper.SettingsDeviceHelper import SettingsDeviceHelper

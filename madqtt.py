@@ -50,15 +50,16 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         self._instance = self._mad_parts["db_wrapper"].get_instance_id()
         self._mad_parts['logger'].info('plugin is running on instance {0}'.format(self._instance))
 
-        await self.load_plugin_config()
+        await self.search_devices()
+        await self.load_config()
         # await self.save_plugin_config()
-        # await self.search_devices()
+        #
 
         self.event_loop()
 
         return True
 
-    async def load_plugin_config(self):
+    async def load_config(self):
         self._mad_parts['logger'].info('load_plugin_config')
         self._config = {
             'timeouts': {
@@ -76,6 +77,16 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
             }
         }
+
+        #load device config if present
+        for device in self._devices:
+            section = 'device.{0}'.format(device['origin']
+
+            self._config['devices'][device['origin']] = {
+                'active': self._pluginconfig.getboolean(section, "active", fallback=False),
+                'mode': self._pluginconfig.get(section, "active", fallback=None)
+            }
+
         self._mad_parts['logger'].info(self._config)
 
     # async def save_plugin_config(self):
@@ -87,20 +98,18 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     #
     #     self.load_plugin_config()
     #
-    # async def search_devices(self):
-    #     self._mad_parts['logger'].info('search_devices')
-    #
-    #     self._devices = []
-    #     async with self._mad_parts["db_wrapper"] as session, session:
-    #         for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):
-    #             device = {}
-    #             device['id'] = settingsDevice.device_id
-    #             device['origin'] = settingsDevice.name
-    #             device['state'] = None
-    #             device['power-time'] = None
-    #             self._devices.append(device)
-    #
-    #     self._mad_parts['logger'].info(self._devices)
+    async def search_devices(self):
+        self._mad_parts['logger'].info('search_devices')
+
+        self._devices = []
+        async with self._mad_parts["db_wrapper"] as session, session:
+            for settingsDevice in await SettingsDeviceHelper.get_all(session, self._instance):
+                device = {}
+                device['id'] = settingsDevice.device_id
+                device['origin'] = settingsDevice.name
+                self._devices.append(device)
+
+        self._mad_parts['logger'].info(self._devices)
     #
     # async def refresh_devices(self):
     #     self._mad_parts['logger'].info('refresh_devices')

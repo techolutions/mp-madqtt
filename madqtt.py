@@ -52,8 +52,6 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
         await self.search_devices()
         await self.load_config()
-        # await self.save_plugin_config()
-        #
 
         self.event_loop()
 
@@ -76,8 +74,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'ssl': self._pluginconfig.getboolean("mqtt", "ssl", fallback=False),
                 'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
             },
-            'devices': {
-            }
+            'devices': {}
         }
 
         # load device config if present
@@ -109,7 +106,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     #         self._pluginconfig.write(configfile)
     #
     #     self.load_plugin_config()
-    #
+
     async def search_devices(self):
         self._mad_parts['logger'].info('search_devices')
 
@@ -122,7 +119,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 self._devices.append(device)
 
         self._mad_parts['logger'].info(self._devices)
-    #
+
     # async def refresh_devices(self):
     #     self._mad_parts['logger'].info('refresh_devices')
     #

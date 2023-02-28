@@ -145,16 +145,6 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            try:
-                async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
-                    async with client.messages() as messages:
-                        await client.subscribe("#")
-                        async for message in messages:
-                            print(message.payload.decode())
-            except aiomqtt.MqttError as error:
-                print(f'Error "{error}". Reconnecting in {reconnect_interval} seconds.')
-                await asyncio.sleep(reconnect_interval)
-
             # await self.refresh_devices()
             # for device in self._devices:
             #     if device['state'] == 'off':
@@ -174,7 +164,21 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
             await asyncio.sleep(self._config['timeouts']['check'])
 
+    async def mqtt_listener(self):
+        while True:
+            try:
+                async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
+                    async with client.messages() as messages:
+                        await client.subscribe("#")
+                        async for message in messages:
+                            print(message.payload.decode())
+            except aiomqtt.MqttError as error:
+                print(f'Error "{error}". Reconnecting in {reconnect_interval} seconds.')
+                await asyncio.sleep(5)
+
 
     def event_loop(self):
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.madqtt())
+        #loop = asyncio.get_event_loop()
+        #loop.create_task(self.madqtt())
+        asyncio.create_task(self.madqtt())
+        asyncio.create_task(self.mqtt_listener())

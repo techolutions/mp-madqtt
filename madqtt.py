@@ -166,16 +166,11 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
-        while True:
-            try:
-                async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
-                    async with client.messages() as messages:
-                        await client.subscribe("#")
-                        async for message in messages:
-                            print(message.payload.decode())
-            except aiomqtt.MqttError as error:
-                print(f'Error "{error}". Reconnecting in {reconnect_interval} seconds.')
-                await asyncio.sleep(5)
+        async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
+            async with client.messages() as messages:
+                await client.subscribe('#')
+                async for message in messages:
+                    self._mad_parts['logger'].info((message.payload.decode())
 
 
     def event_loop(self):

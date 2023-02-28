@@ -142,7 +142,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     #
     #     self._mad_parts['logger'].info(self._devices)
 
-    async def madqtt(self):
+    async def madqtt_runner(self):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
@@ -166,17 +166,21 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
-        async with aiomqtt.Client(self._config['mqtt']['host'],
-                                  port=self._config['mqtt']['port'],
-                                  username=self._config['mqtt']['user'],
-                                  password=self._config['mqtt']['pass']) as client:
-            async with client.messages() as messages:
-                await client.subscribe('#')
-                async for message in messages:
-                    self._mad_parts['logger'].info(message.payload.decode())
+        reconnect_interval = 10
+        while True:
+            try:
+                async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as client:
+                    self._client = client
+                    async with client.messages() as messages:
+                        await client.subscribe('stat/#')
+                        async for message in messages:
+                            self._mad_parts['logger'].info(message.payload.decode())
+            except aiomqtt.MqttError as error:
+                self._mad_parts['logger'].info('mqtt error {0}, trying to reconnect in {1} seconds.'.format(error, reconnect_interval))
+                await asyncio.sleep(reconnect_interval)
 
     def event_loop(self):
         #loop = asyncio.get_event_loop()
         #loop.create_task(self.madqtt())
-        asyncio.create_task(self.madqtt())
+        asyncio.create_task(self.madqtt_runner())
         asyncio.create_task(self.mqtt_listener())

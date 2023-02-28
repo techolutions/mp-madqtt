@@ -127,6 +127,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     async def restart_device(self, origin):
         self._mad_parts['logger'].info('restart_device {0}'.format(origin))
 
+        self._mad_parts['logger'].info(self._config['devices'][origin])
         if (self._config['devices'][origin]['mode'] == 'mqtt'):
             await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-off'])
             await asyncio.sleep(5)

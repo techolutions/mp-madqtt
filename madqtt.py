@@ -15,7 +15,6 @@ import importlib
 register_custom_plugin_endpoints = importlib.import_module("plugins.mp-madqtt.endpoints").register_custom_plugin_endpoints
 
 class MADqtt(mapadroid.plugins.pluginBase.Plugin):
-    global client
 
     def _file_path(self) -> str:
         return os.path.dirname(os.path.abspath(__file__))
@@ -147,9 +146,11 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            await client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-off'])
+            asyncio.create_task(self.mqtt_listener())
+
+            await self._client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-off'])
             await asyncio.sleep(1)
-            await client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-on'])
+            await self._client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-on'])
             # await self.refresh_devices()
             # for device in self._devices:
             #     if device['state'] == 'off':
@@ -173,8 +174,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         reconnect_interval = 10
         while True:
             try:
-                async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as c:
-                    client = c
+                async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as client:
+                    self._client = client
                     async with client.messages() as messages:
                         await client.subscribe('#')
                         async for message in messages:
@@ -186,5 +187,4 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     def event_loop(self):
         #loop = asyncio.get_event_loop()
         #loop.create_task(self.madqtt())
-        asyncio.create_task(self.mqtt_listener())
         asyncio.create_task(self.madqtt_runner())

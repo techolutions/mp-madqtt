@@ -149,9 +149,10 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             self._client = aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass'])
 
             async with self._client as client:
-                await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
-                await asyncio.sleep(1)
-                await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
+                pass
+                #await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
+                #await asyncio.sleep(1)
+                #await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
 
             # await self.refresh_devices()
             # for device in self._devices:

@@ -53,7 +53,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         await self.search_devices()
         await self.load_config()
 
-        self._client = None
+        self._mqtt_client = None
 
         self.event_loop()
 
@@ -80,7 +80,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             'devices': {}
         }
 
-        # load device config if present
+        # load device-config if present
         for device in self._devices:
             section = 'device.{0}'.format(device['origin'])
             self._mad_parts['logger'].info('read device config from section {0}'.format(section))
@@ -95,8 +95,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 self._config['devices'][device['origin']] = {
                     'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
                     'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
+                    'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
                     'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
-                    'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF'),
+                    'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
                 }
 
         self._mad_parts['logger'].info(self._config)
@@ -123,6 +124,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
         self._mad_parts['logger'].info(self._devices)
 
+    async def restart_device(self, origin):
+        self._mad_parts['logger'].info('restart_device {0}'.format(origin))
+
+        if (self._config['devices'][origin]['mode'] == 'mqtt'):
+            await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-off'])
+            await asyncio.sleep(5)
+            await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-on'])
+
     # async def refresh_devices(self):
     #     self._mad_parts['logger'].info('refresh_devices')
     #
@@ -148,10 +157,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            if (self._client != None):
-                await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-off'])
-                await asyncio.sleep(1)
-                await self._client.publish(self._config['devices']['ATV06']['topic-pub'], payload=self._config['devices']['ATV06']['payload-on'])
+            if (self._mqtt_client != None):
+                self.restart_device('ATV06')
 
             # await self.refresh_devices()
             # for device in self._devices:
@@ -173,19 +180,17 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
-        reconnect_interval = 10
-
         while True:
             try:
-                async with aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass']) as client:
-                    self._client = client
-                    async with client.messages() as messages:
-                        await client.subscribe('#')
+                async with aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass'], client_id=self._config['mqtt']['client-id']) as client:
+                    self._mqtt_client = client
+                    async with self._mqtt_client.messages() as messages:
+                        await self._mqtt_client.subscribe('#')
                         async for message in messages:
                             self._mad_parts['logger'].info(message.payload.decode())
             except aiomqtt.MqttError as error:
-                self._mad_parts['logger'].info('mqtt error {0}, trying to reconnect in {1} seconds.'.format(error, reconnect_interval))
-                await asyncio.sleep(reconnect_interval)
+                self._mad_parts['logger'].info('mqtt error {0}, trying to reconnect in 10 seconds.'.format(error))
+                await asyncio.sleep(10)
 
     def event_loop(self):
         #loop = asyncio.get_event_loop()

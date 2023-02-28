@@ -20,5 +20,6 @@ active = true
 mode = mqtt
 topic-pub = cmnd/tasmota_471E51/POWER
 topic-sub = stat/tasmota_471E51/POWER
+topic-req = cmnd/tasmota_471E51/POWER
 payload-on = ON
 payload-off = OFF

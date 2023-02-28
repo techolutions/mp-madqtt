@@ -75,6 +75,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'pass': self._pluginconfig.get('mqtt', 'pass', fallback=None),
                 'ssl': self._pluginconfig.getboolean("mqtt", "ssl", fallback=False),
                 'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
+            },
+            'devices': {
             }
         }
 

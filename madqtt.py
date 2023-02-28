@@ -166,7 +166,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
-        async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
+        async with aiomqtt.Client(self._config['mqtt']['host']) as client:
             async with client.messages() as messages:
                 await client.subscribe('#')
                 async for message in messages:

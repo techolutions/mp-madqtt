@@ -185,5 +185,5 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     def event_loop(self):
         #loop = asyncio.get_event_loop()
         #loop.create_task(self.madqtt())
-        asyncio.create_task(self.madqtt_runner())
         asyncio.create_task(self.mqtt_listener())
+        asyncio.create_task(self.madqtt_runner())

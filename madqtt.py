@@ -146,9 +146,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
-            await self._client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-off'])
+            await client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-off'])
             await asyncio.sleep(1)
-            await self._client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-on'])
+            await client.publish(self._config['device.ATV06']['topic-pub'], payload=self._config['device.ATV06']['payload-on'])
             # await self.refresh_devices()
             # for device in self._devices:
             #     if device['state'] == 'off':
@@ -169,11 +169,12 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             await asyncio.sleep(self._config['timeouts']['check'])
 
     async def mqtt_listener(self):
+        global client
         reconnect_interval = 10
         while True:
             try:
-                async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as client:
-                    self._client = client
+                async with aiomqtt.Client(self._config['mqtt']['host'],port=self._config['mqtt']['port'],username=self._config['mqtt']['user'],password=self._config['mqtt']['pass']) as c:
+                    client = c
                     async with client.messages() as messages:
                         await client.subscribe('#')
                         async for message in messages:

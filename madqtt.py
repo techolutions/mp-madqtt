@@ -142,13 +142,6 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     #
     #     self._mad_parts['logger'].info(self._devices)
 
-    async def mqtt_listener(self):
-        async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
-            async with client.messages() as messages:
-                await client.subscribe('#')
-                async for message in messages:
-                    self._mad_parts['logger'].info((message.payload.decode())
-
     async def madqtt(self):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
@@ -172,6 +165,12 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
 
             await asyncio.sleep(self._config['timeouts']['check'])
 
+    async def mqtt_listener(self):
+        async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
+            async with client.messages() as messages:
+                await client.subscribe('#')
+                async for message in messages:
+                    self._mad_parts['logger'].info(message.payload.decode())
 
     def event_loop(self):
         #loop = asyncio.get_event_loop()

@@ -145,6 +145,16 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
         while True:
             self._mad_parts['logger'].info('searching for devices that need a reboot')
 
+            try:
+                async with aiomqtt.Client(self._config['mqtt']['host'], self._config['mqtt']['port'], self._config['mqtt']['user'], self._config['mqtt']['pass']) as client:
+                    async with client.messages() as messages:
+                        await client.subscribe("#")
+                        async for message in messages:
+                            print(message.payload.decode())
+            except aiomqtt.MqttError as error:
+                print(f'Error "{error}". Reconnecting in {reconnect_interval} seconds.')
+                await asyncio.sleep(reconnect_interval)
+
             # await self.refresh_devices()
             # for device in self._devices:
             #     if device['state'] == 'off':

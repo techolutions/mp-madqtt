@@ -88,7 +88,6 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'devices': {
                     device['origin']: {
                         'active': self._pluginconfig.getboolean(section, "active", fallback=False),
-                        'mode': self._pluginconfig.get(section, "mode", fallback=None),
                         'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
                         'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
                         'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),

@@ -69,12 +69,12 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'check': int(self._pluginconfig.get('timeouts', 'check', fallback=60))
             },
             'broker': {
-                'host': self._pluginconfig.get('mqtt', 'host', fallback='localhost'),
-                'port': int(self._pluginconfig.get('mqtt', 'port', fallback=1883)),
-                'user': self._pluginconfig.get('mqtt', 'user', fallback=None),
-                'pass': self._pluginconfig.get('mqtt', 'pass', fallback=None),
-                'ssl': self._pluginconfig.getboolean("mqtt", "ssl", fallback=False),
-                'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
+                'host': self._pluginconfig.get('broker', 'host', fallback='localhost'),
+                'port': int(self._pluginconfig.get('broker', 'port', fallback=1883)),
+                'user': self._pluginconfig.get('broker', 'user', fallback=None),
+                'pass': self._pluginconfig.get('broker', 'pass', fallback=None),
+                'ssl': self._pluginconfig.getboolean("broker", "ssl", fallback=False),
+                'client-id': self._pluginconfig.get('broker', 'client-id', fallback='madqtt-client')
             },
             'devices': {}
         }
@@ -175,7 +175,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     async def mqtt_listener(self):
         while True:
             try:
-                async with aiomqtt.Client(self._config['mqtt']['host'], port=self._config['mqtt']['port'], username=self._config['mqtt']['user'], password=self._config['mqtt']['pass'], client_id=self._config['mqtt']['client-id']) as client:
+                async with aiomqtt.Client(self._config['broker']['host'], port=self._config['broker']['port'], username=self._config['broker']['user'], password=self._config['broker']['pass'], client_id=self._config['broker']['client-id']) as client:
                     self._mqtt_client = client
                     async with self._mqtt_client.messages() as messages:
                         await self._mqtt_client.subscribe('#')

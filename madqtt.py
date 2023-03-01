@@ -76,8 +76,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'pass': self._pluginconfig.get('mqtt', 'pass', fallback=None),
                 'ssl': self._pluginconfig.getboolean("mqtt", "ssl", fallback=False),
                 'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
-            },
-            'devices': {}
+            }
         }
 
         # load device-config if present
@@ -85,20 +84,19 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             section = 'device.{0}'.format(device['origin'])
             self._mad_parts['logger'].info('read device config from section {0}'.format(section))
 
-            self._config['devices'][device['origin']] = {
-                'active': self._pluginconfig.getboolean(section, "active", fallback=False),
-                'mode': self._pluginconfig.get(section, "mode", fallback=None)
-            }
-
-            ## load mqtt specific settings
-            if (self._config['devices'][device['origin']]['mode'] == 'mqtt'):
-                self._config['devices'][device['origin']].update({
-                    'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
-                    'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
-                    'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
-                    'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
-                    'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
-                })
+            self._config.update({
+                'devices': {
+                    device['origin']: {
+                        'active': self._pluginconfig.getboolean(section, "active", fallback=False),
+                        'mode': self._pluginconfig.get(section, "mode", fallback=None),
+                        'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
+                        'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
+                        'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
+                        'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
+                        'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
+                    }
+                }
+            })
 
         self._mad_parts['logger'].info(self._config)
 
@@ -127,10 +125,9 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
     async def restart_device(self, origin):
         self._mad_parts['logger'].info('restart_device {0}'.format(origin))
 
-        if (self._config['devices'][origin]['mode'] == 'mqtt'):
-            await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-off'])
-            await asyncio.sleep(5)
-            await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-on'])
+        await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-off'])
+        await asyncio.sleep(5)
+        await self._mqtt_client.publish(self._config['devices'][origin]['topic-pub'], payload=self._config['devices'][origin]['payload-on'])
 
     # async def refresh_devices(self):
     #     self._mad_parts['logger'].info('refresh_devices')

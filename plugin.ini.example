@@ -7,7 +7,6 @@ restart = 900
 check = 60
 
 [mqtt]
-active = true
 host = localhost
 #port = 1883
 #user = mqttuser
@@ -17,7 +16,6 @@ client-id = madqtt-client
 
 [device.ATV06]
 active = true
-mode = mqtt
 topic-pub = cmnd/tasmota_471E51/POWER
 topic-sub = stat/tasmota_471E51/POWER
 topic-req = cmnd/tasmota_471E51/POWER

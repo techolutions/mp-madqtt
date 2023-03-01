@@ -6,7 +6,7 @@ proto = 600
 restart = 900
 check = 60
 
-[mqtt]
+[broker]
 host = localhost
 #port = 1883
 #user = mqttuser

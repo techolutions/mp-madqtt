@@ -68,8 +68,7 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'restart': int(self._pluginconfig.get('timeouts', 'restart', fallback=900)),
                 'check': int(self._pluginconfig.get('timeouts', 'check', fallback=60))
             },
-            'mqtt': {
-                'active': self._pluginconfig.getboolean("mqtt", "active", fallback=True),
+            'broker': {
                 'host': self._pluginconfig.get('mqtt', 'host', fallback='localhost'),
                 'port': int(self._pluginconfig.get('mqtt', 'port', fallback=1883)),
                 'user': self._pluginconfig.get('mqtt', 'user', fallback=None),
@@ -85,16 +84,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             section = 'device.{0}'.format(device['origin'])
             self._mad_parts['logger'].info('read device config from section {0}'.format(section))
 
-            self._config['devices'].update({
-                device['origin']: {
-                    'active': self._pluginconfig.getboolean(section, "active", fallback=False),
-                    'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
-                    'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
-                    'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
-                    'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
-                    'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
-                }
-            })
+            self._config['devices'][device['origin']] = {
+                'active': self._pluginconfig.getboolean(section, "active", fallback=False),
+                'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
+                'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
+                'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
+                'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
+                'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
+            }
 
         self._mad_parts['logger'].info(self._config)
 

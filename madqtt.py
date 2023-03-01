@@ -76,7 +76,8 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
                 'pass': self._pluginconfig.get('mqtt', 'pass', fallback=None),
                 'ssl': self._pluginconfig.getboolean("mqtt", "ssl", fallback=False),
                 'client-id': self._pluginconfig.get('mqtt', 'client-id', fallback='madqtt-client')
-            }
+            },
+            'devices': {}
         }
 
         # load device-config if present
@@ -84,16 +85,14 @@ class MADqtt(mapadroid.plugins.pluginBase.Plugin):
             section = 'device.{0}'.format(device['origin'])
             self._mad_parts['logger'].info('read device config from section {0}'.format(section))
 
-            self._config.update({
-                'devices': {
-                    device['origin']: {
-                        'active': self._pluginconfig.getboolean(section, "active", fallback=False),
-                        'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
-                        'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
-                        'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
-                        'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
-                        'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
-                    }
+            self._config['devices'].update({
+                device['origin']: {
+                    'active': self._pluginconfig.getboolean(section, "active", fallback=False),
+                    'topic-pub': self._pluginconfig.get(section, "topic-pub", fallback=None),
+                    'topic-sub': self._pluginconfig.get(section, "topic-sub", fallback=None),
+                    'topic-req': self._pluginconfig.get(section, "topic-req", fallback=None),
+                    'payload-on': self._pluginconfig.get(section, "payload-on", fallback='ON'),
+                    'payload-off': self._pluginconfig.get(section, "payload-off", fallback='OFF')
                 }
             })
 
